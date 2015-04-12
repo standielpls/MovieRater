@@ -16,6 +16,8 @@ import java.util.List;
 
 import com.google.gson.*;
 
+import javax.swing.*;
+
 
 public class Main {
     private MovieData md;
@@ -45,7 +47,12 @@ public class Main {
 
     public void loadData() {
 
-        final File folder = new File("/Users/stanleychin/Desktop/Movies");
+        JFileChooser f = new JFileChooser();
+        f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        f.showSaveDialog(null);
+        final File folder = f.getCurrentDirectory(); 
+
+        //final File folder = new File("/Users/stanleychin/Desktop/Movies");
         listFilesForFolder(folder);
         /*String skeleton = "http://www.omdbapi.com/?t=" + movieName1+fivmovieName2 + "&y=&plot=short&r=json";
         String url="http://www.omdbapi.com/?t=fast+five&y=&plot=short&r=json";
@@ -97,7 +104,7 @@ public class Main {
 
             //get rid of periods
             String parsedMovieName = movieToModify.substring(0, index_to_parse - 1);
-            System.out.println("2: " +parsedMovieName);
+            System.out.println("2: " + parsedMovieName);
             parsedMovieName = parsedMovieName.replaceAll("\\.", " ");
             System.out.println("3: " + parsedMovieName);
             movieName.set(index, parsedMovieName.substring(0, index_to_parse - 1));
