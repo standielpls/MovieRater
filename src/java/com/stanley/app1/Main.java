@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,7 +26,12 @@ public class Main {
         h = new HashMap<String, Double>();
         movieName = new ArrayList<String>();
         loadData();
-        storeRatings();
+        modifyMovieTitle();
+        System.out.println(movieName.toString());
+
+
+        //storeRatings();
+
     }
     public static void main(String[] args) {
         Main m = new Main();
@@ -41,7 +47,6 @@ public class Main {
 
         final File folder = new File("/Users/stanleychin/Desktop/Movies");
         listFilesForFolder(folder);
-        System.out.println(movieName.toString());
         /*String skeleton = "http://www.omdbapi.com/?t=" + movieName1+fivmovieName2 + "&y=&plot=short&r=json";
         String url="http://www.omdbapi.com/?t=fast+five&y=&plot=short&r=json";
 
@@ -61,7 +66,7 @@ public class Main {
                 listFilesForFolder(fileEntry);
             } else {
                 String fileName = fileEntry.getName();
-                if (fileName.substring(fileName.length() - 3, fileName.length()).equals("mp4")) {
+                if (fileName.substring(fileName.length() - 3, fileName.length()).equals("mp4") && fileName.contains("YIFY")) {
                     movieName.add(fileName);
                 }
             }
@@ -71,8 +76,31 @@ public class Main {
     private void modifyMovieTitle() {
 
         int index = 0;
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int index_to_parse=0;
         while(index < movieName.size()) {
+            String movieToModify = movieName.get(index);
+            System.out.println("1: " +movieToModify);
 
+            int year_counter = 2000;
+
+            //get rid of the extra stuff after the year
+            while (year_counter <= year)
+            {
+                String year1 = Integer.toString(year_counter);
+                if (movieToModify.contains(year1)) {
+                    index_to_parse = movieToModify.indexOf(year1);
+                    break;
+                }
+                year_counter++;
+            }
+
+            //get rid of periods
+            String parsedMovieName = movieToModify.substring(0, index_to_parse - 1);
+            System.out.println("2: " +parsedMovieName);
+            parsedMovieName = parsedMovieName.replaceAll("\\.", " ");
+            System.out.println("3: " + parsedMovieName);
+            movieName.set(index, parsedMovieName.substring(0, index_to_parse - 1));
             index++;
         }
     }
