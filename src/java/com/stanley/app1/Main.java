@@ -29,7 +29,10 @@ public class Main {
         movieName = new ArrayList<String>();
         loadData();
         modifyMovieTitle();
-        System.out.println(movieName.toString());
+        parseMovieData();
+
+        System.out.println("h.size() = "  + h.size());
+        //System.out.println(movieName.toString());
 
 
         //storeRatings();
@@ -40,31 +43,19 @@ public class Main {
         m.printData();
     }
     public void printData() {
-        int num = h.size();
-
         System.out.println(h.values());
     }
 
     public void loadData() {
+//        JFileChooser f = new JFileChooser();
+//        f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+//        f.showSaveDialog(null);
+        //final File folder = f.getCurrentDirectory();
+        final File folder = new File("/Users/stanleychin/Desktop/Movies");
 
-        JFileChooser f = new JFileChooser();
-        f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        f.showSaveDialog(null);
-        final File folder = f.getCurrentDirectory(); 
-
-        //final File folder = new File("/Users/stanleychin/Desktop/Movies");
         listFilesForFolder(folder);
-        /*String skeleton = "http://www.omdbapi.com/?t=" + movieName1+fivmovieName2 + "&y=&plot=short&r=json";
-        String url="http://www.omdbapi.com/?t=fast+five&y=&plot=short&r=json";
 
-        try {
-            String jsonData = readUrl(url);
 
-            Gson gsonCurrent = new Gson();
-            md = gsonCurrent.fromJson(jsonData, MovieData.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
     }
 
     public void listFilesForFolder(File folder) {
@@ -73,7 +64,8 @@ public class Main {
                 listFilesForFolder(fileEntry);
             } else {
                 String fileName = fileEntry.getName();
-                if (fileName.substring(fileName.length() - 3, fileName.length()).equals("mp4") && fileName.contains("YIFY")) {
+                if (fileName.substring(fileName.length() - 3, fileName.length()).equals("mp4") && fileName.contains("x264")
+                        && !fileName.contains("ASAP")) {
                     movieName.add(fileName);
                 }
             }
@@ -112,8 +104,42 @@ public class Main {
         }
     }
 
-    private void storeRatings() {
-        h.put(md.getTitle(), Double.parseDouble(md.getImdbRating()));
+    private void parseMovieData() {
+        final String skeletonFront = "http://www.omdbapi.com/?t=";
+        final String skeletonEnd = "&y=&plot=short&r=json";
+        int num_of_words_in_title=0;
+        int index = 0;
+        while(index < movieName.size()) {
+            String[] parts = movieName.get(index).split(" ");
+            int i = 0;
+            String middlePiece ="";
+            middlePiece += parts[i++];
+            while (i < parts.length) {
+                middlePiece += "+";
+                middlePiece += parts[i++];
+            }
+            System.out.println("10: " + middlePiece);
+            String url = skeletonFront + middlePiece + skeletonEnd;
+            System.out.println("11: " +url);
+            try {
+                String jsonData = readUrl(url);
+
+                Gson gsonCurrent = new Gson();
+                md = gsonCurrent.fromJson(jsonData, MovieData.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println(md.getTitle());
+            if (md.getImdbRating().equals("N/A"))
+                storeRating(md.getTitle(), 0.0);
+            else
+                storeRating(md.getTitle(), Double.parseDouble(md.getImdbRating()));
+
+            index++;
+        }
+    }
+    private void storeRating(String s, Double d) {
+        h.put(s, d);
     }
     /**
      * Helper method to read the URL as a String and make a request to the server to read the contents of the page
@@ -138,6 +164,5 @@ public class Main {
                 reader.close();
         }
     }
-
 }
 
