@@ -1,24 +1,22 @@
 package com.stanley.app1;
 
 /**
- Description:
- MovieRater is used to track the ratings given on IMDB of a given 'Movies' directory.
- The result is a printed list of the movie name and the rating. The practical use of this
- program is to view what movie has great ratings so that you may randomly pick a movie
- to watch for your interest, effortlessly.
-
- Author:
- Stanley Chin
-
- Date:
- April 12, 2015
+ * Description:
+ * MovieRater is used to track the ratings given on IMDB of a given 'Movies' directory.
+ * The result is a printed list of the movie name and the rating. The practical use of this
+ * program is to view what movie has great ratings so that you may randomly pick a movie
+ * to watch for your interest, effortlessly.
+ * <p>
+ * Author:
+ * Stanley Chin
+ * <p>
+ * Date:
+ * April 12, 2015
  */
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -86,9 +84,9 @@ public class Main {
     public void printData() {
         System.out.println("==========================================");
         System.out.println("RATING\t\tTITLE");
-        int i=0;
-        while(i < h.size()) {
-            System.out.println(h.get(movies.get(i))  + "\t\t" + movies.get(i));
+        int i = 0;
+        while (i < h.size()) {
+            System.out.println(h.get(movies.get(i)) + "\t\t" + movies.get(i));
             i++;
         }
     }
@@ -97,13 +95,15 @@ public class Main {
      * loads the data from the directory chosen
      */
     public void loadData() {
-        JFileChooser f = new JFileChooser();
-        f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        f.showSaveDialog(null);
-        final File folder = f.getCurrentDirectory();
-        //final File folder = new File("/Users/stanleychin/Desktop/Movies");
+//        JFileChooser f = new JFileChooser();
+//        f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+//        f.showSaveDialog(null);
+//        final File folder = f.getCurrentDirectory();
+//        //final File folder = new File("/Users/stanleychin/Desktop/Movies");
+        final File folder = new File("movietitles.txt");
 
-        listFilesForFolder(folder);
+        //listFilesForFolder(folder);
+        listFilesDirectly(folder);
     }
 
     /**
@@ -118,10 +118,28 @@ public class Main {
                 String fileName = fileEntry.getName();
                 //picks strictly from a direct set of file names
                 if (fileName.substring(fileName.length() - 3, fileName.length()).equals("mp4") && fileName.contains("x264")
-                        && !fileName.contains("ASAP") && !fileName.contains("asap")) {
+                        && !fileName.contains("ASAP") && !fileName.contains("asap") && !fileName.contains("Dead")) {
                     movieName.add(fileName);
+                    System.out.println("MOVIE: " + fileName);
                 }
             }
+        }
+    }
+
+    private void listFilesDirectly(File folder) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(folder));
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.substring(line.length() - 3, line.length()).equals("mp4") && line.contains("x264")
+                        && !line.contains("ASAP") && !line.contains("asap") && !line.contains("Poets") && !line.contains("Joe")) {
+                    movieName.add(line);
+                }
+            }
+        } catch (FileNotFoundException f) {
+            f.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -156,17 +174,22 @@ public class Main {
                 index_to_parse += 2;
                 parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
 
-            }
-            else if (parsedMovieName.contains(",")) {
+            } else if (parsedMovieName.contains(",")) {
                 parsedMovieName = parsedMovieName.replace(",", "%2C");      //replace all commas with %2c (ASCII)
-                index_to_parse +=2;
+                index_to_parse += 2;
                 parsedMovieName = parsedMovieName.replaceAll("\\.", "");   //replace all periods with space
-            }
-            else
+            } else if (parsedMovieName.contains("'")) {                    
+                parsedMovieName = parsedMovieName.replace("'", "%27");      //replace all apostrophe with %27 (ASCII)
+                index_to_parse += 2;
                 parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
+            } else
+                parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
+
+            System.out.println(parsedMovieName);
 
             movieName.set(index, parsedMovieName.substring(0, index_to_parse - 1));
             movie_name_year.put(parsedMovieName, year_counter);
+
             index++;
         }
     }
@@ -206,14 +229,18 @@ public class Main {
                 ObjectMapper objectMapper = new ObjectMapper();
 
                 //convert json string to object
-                md= objectMapper.readValue(jsonData, MovieData.class);
+                md = objectMapper.readValue(jsonData, MovieData.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (md.getImdbRating().equals("N/A"))
-                storeRating(md.getTitle(), 0.0);
-            else
-                storeRating(md.getTitle(), Double.parseDouble(md.getImdbRating()));
+            String rep = md.getResponse();
+            if (rep.equals("True")) {
+                if (md.getImdbRating().equals("N/A")) {
+                    storeRating(md.getTitle(), 0.0);
+                }
+                else
+                    storeRating(md.getTitle(), Double.parseDouble(md.getImdbRating()));
+            }
             index++;
         }
     }

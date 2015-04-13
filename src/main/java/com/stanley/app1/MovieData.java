@@ -1,39 +1,35 @@
 
 package com.stanley.app1;
 
+import com.fasterxml.jackson.annotation.*;
+
+import javax.annotation.Generated;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Generated;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
-    "Title",
-    "Year",
-    "Rated",
-    "Released",
-    "Runtime",
-    "Genre",
-    "Director",
-    "Writer",
-    "Actors",
-    "Plot",
-    "Language",
-    "Country",
-    "Awards",
-    "Poster",
-    "Metascore",
-    "imdbRating",
-    "imdbVotes",
-    "imdbID",
-    "Type",
-    "Response"
+        "Title",
+        "Year",
+        "Rated",
+        "Released",
+        "Runtime",
+        "Genre",
+        "Director",
+        "Writer",
+        "Actors",
+        "Plot",
+        "Language",
+        "Country",
+        "Awards",
+        "Poster",
+        "Metascore",
+        "imdbRating",
+        "imdbVotes",
+        "imdbID",
+        "Type",
+        "Response"
 })
 public class MovieData {
 
@@ -81,9 +77,7 @@ public class MovieData {
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
-     * 
-     * @return
-     *     The Title
+     * @return The Title
      */
     @JsonProperty("Title")
     public String getTitle() {
@@ -91,9 +85,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Title
-     *     The Title
+     * @param Title The Title
      */
     @JsonProperty("Title")
     public void setTitle(String Title) {
@@ -101,9 +93,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Year
+     * @return The Year
      */
     @JsonProperty("Year")
     public String getYear() {
@@ -111,9 +101,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Year
-     *     The Year
+     * @param Year The Year
      */
     @JsonProperty("Year")
     public void setYear(String Year) {
@@ -121,9 +109,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Rated
+     * @return The Rated
      */
     @JsonProperty("Rated")
     public String getRated() {
@@ -131,9 +117,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Rated
-     *     The Rated
+     * @param Rated The Rated
      */
     @JsonProperty("Rated")
     public void setRated(String Rated) {
@@ -141,9 +125,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Released
+     * @return The Released
      */
     @JsonProperty("Released")
     public String getReleased() {
@@ -151,9 +133,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Released
-     *     The Released
+     * @param Released The Released
      */
     @JsonProperty("Released")
     public void setReleased(String Released) {
@@ -161,9 +141,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Runtime
+     * @return The Runtime
      */
     @JsonProperty("Runtime")
     public String getRuntime() {
@@ -171,9 +149,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Runtime
-     *     The Runtime
+     * @param Runtime The Runtime
      */
     @JsonProperty("Runtime")
     public void setRuntime(String Runtime) {
@@ -181,9 +157,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Genre
+     * @return The Genre
      */
     @JsonProperty("Genre")
     public String getGenre() {
@@ -191,9 +165,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Genre
-     *     The Genre
+     * @param Genre The Genre
      */
     @JsonProperty("Genre")
     public void setGenre(String Genre) {
@@ -201,9 +173,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Director
+     * @return The Director
      */
     @JsonProperty("Director")
     public String getDirector() {
@@ -211,9 +181,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Director
-     *     The Director
+     * @param Director The Director
      */
     @JsonProperty("Director")
     public void setDirector(String Director) {
@@ -221,9 +189,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Writer
+     * @return The Writer
      */
     @JsonProperty("Writer")
     public String getWriter() {
@@ -231,9 +197,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Writer
-     *     The Writer
+     * @param Writer The Writer
      */
     @JsonProperty("Writer")
     public void setWriter(String Writer) {
@@ -241,9 +205,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Actors
+     * @return The Actors
      */
     @JsonProperty("Actors")
     public String getActors() {
@@ -251,9 +213,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Actors
-     *     The Actors
+     * @param Actors The Actors
      */
     @JsonProperty("Actors")
     public void setActors(String Actors) {
@@ -261,9 +221,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Plot
+     * @return The Plot
      */
     @JsonProperty("Plot")
     public String getPlot() {
@@ -271,9 +229,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Plot
-     *     The Plot
+     * @param Plot The Plot
      */
     @JsonProperty("Plot")
     public void setPlot(String Plot) {
@@ -281,9 +237,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Language
+     * @return The Language
      */
     @JsonProperty("Language")
     public String getLanguage() {
@@ -291,9 +245,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Language
-     *     The Language
+     * @param Language The Language
      */
     @JsonProperty("Language")
     public void setLanguage(String Language) {
@@ -301,9 +253,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Country
+     * @return The Country
      */
     @JsonProperty("Country")
     public String getCountry() {
@@ -311,9 +261,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Country
-     *     The Country
+     * @param Country The Country
      */
     @JsonProperty("Country")
     public void setCountry(String Country) {
@@ -321,9 +269,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Awards
+     * @return The Awards
      */
     @JsonProperty("Awards")
     public String getAwards() {
@@ -331,9 +277,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Awards
-     *     The Awards
+     * @param Awards The Awards
      */
     @JsonProperty("Awards")
     public void setAwards(String Awards) {
@@ -341,9 +285,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Poster
+     * @return The Poster
      */
     @JsonProperty("Poster")
     public String getPoster() {
@@ -351,9 +293,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Poster
-     *     The Poster
+     * @param Poster The Poster
      */
     @JsonProperty("Poster")
     public void setPoster(String Poster) {
@@ -361,9 +301,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Metascore
+     * @return The Metascore
      */
     @JsonProperty("Metascore")
     public String getMetascore() {
@@ -371,9 +309,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Metascore
-     *     The Metascore
+     * @param Metascore The Metascore
      */
     @JsonProperty("Metascore")
     public void setMetascore(String Metascore) {
@@ -381,9 +317,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The imdbRating
+     * @return The imdbRating
      */
     @JsonProperty("imdbRating")
     public String getImdbRating() {
@@ -391,9 +325,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param imdbRating
-     *     The imdbRating
+     * @param imdbRating The imdbRating
      */
     @JsonProperty("imdbRating")
     public void setImdbRating(String imdbRating) {
@@ -401,9 +333,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The imdbVotes
+     * @return The imdbVotes
      */
     @JsonProperty("imdbVotes")
     public String getImdbVotes() {
@@ -411,9 +341,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param imdbVotes
-     *     The imdbVotes
+     * @param imdbVotes The imdbVotes
      */
     @JsonProperty("imdbVotes")
     public void setImdbVotes(String imdbVotes) {
@@ -421,9 +349,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The imdbID
+     * @return The imdbID
      */
     @JsonProperty("imdbID")
     public String getImdbID() {
@@ -431,9 +357,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param imdbID
-     *     The imdbID
+     * @param imdbID The imdbID
      */
     @JsonProperty("imdbID")
     public void setImdbID(String imdbID) {
@@ -441,9 +365,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Type
+     * @return The Type
      */
     @JsonProperty("Type")
     public String getType() {
@@ -451,9 +373,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Type
-     *     The Type
+     * @param Type The Type
      */
     @JsonProperty("Type")
     public void setType(String Type) {
@@ -461,9 +381,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @return
-     *     The Response
+     * @return The Response
      */
     @JsonProperty("Response")
     public String getResponse() {
@@ -471,9 +389,7 @@ public class MovieData {
     }
 
     /**
-     * 
-     * @param Response
-     *     The Response
+     * @param Response The Response
      */
     @JsonProperty("Response")
     public void setResponse(String Response) {
