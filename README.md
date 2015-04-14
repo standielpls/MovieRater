@@ -3,7 +3,7 @@
 ###Synopsis     
 MovieRater takes your collection of movie titles and retrieves the ratings for those movies.    
      
-MovieRater uses [OMDBAPI](www.omdbapi.com/) to get the ratings for the movies. 
+MovieRater uses [OMDBAPI](https://www.omdbapi.com/) to get the ratings for the movies. 
 It uses the Jackson library to parse data from OMDBAPI and data binds JSON to the Java objects.    
     
     
