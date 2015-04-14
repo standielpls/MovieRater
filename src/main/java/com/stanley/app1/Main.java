@@ -29,7 +29,7 @@ public class Main {
     private List<String> movieName; //stores all the movie names used for url detection
     private HashMap<String, Integer> movie_name_year;   //stores the year of each movie for url detection
     private List<String> movies;    //stores all the user-friendly movie names
-
+private int yify;
     /**
      * Constructor for Main, instantiates the declared instance variables
      */
@@ -89,6 +89,8 @@ public class Main {
             System.out.println(h.get(movies.get(i)) + "\t\t" + movies.get(i));
             i++;
         }
+
+        System.out.println("YIFY: " + yify + "\nNUM: " + h.size());
     }
 
     /**
@@ -131,8 +133,13 @@ public class Main {
             BufferedReader br = new BufferedReader(new FileReader(folder));
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.substring(line.length() - 3, line.length()).equals("mp4") && line.contains("x264")
+                if (line.contains("YIFY")) {
+                    System.out.println("YIFY: " + line);
+                    yify++;
+                }
+                if (line.substring(line.length() - 3, line.length()).equals("mp4") && line.contains("YIFY")
                         && !line.contains("ASAP") && !line.contains("asap") && !line.contains("Poets") && !line.contains("Joe")) {
+
                     movieName.add(line);
                 }
             }
@@ -178,7 +185,7 @@ public class Main {
                 parsedMovieName = parsedMovieName.replace(",", "%2C");      //replace all commas with %2c (ASCII)
                 index_to_parse += 2;
                 parsedMovieName = parsedMovieName.replaceAll("\\.", "");   //replace all periods with space
-            } else if (parsedMovieName.contains("'")) {                    
+            } else if (parsedMovieName.contains("'")) {
                 parsedMovieName = parsedMovieName.replace("'", "%27");      //replace all apostrophe with %27 (ASCII)
                 index_to_parse += 2;
                 parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
