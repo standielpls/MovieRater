@@ -89,22 +89,13 @@ private int yify;
             System.out.println(h.get(movies.get(i)) + "\t\t" + movies.get(i));
             i++;
         }
-
-        System.out.println("YIFY: " + yify + "\nNUM: " + h.size());
     }
 
     /**
      * loads the data from the directory chosen
      */
     public void loadData() {
-//        JFileChooser f = new JFileChooser();
-//        f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-//        f.showSaveDialog(null);
-//        final File folder = f.getCurrentDirectory();
-//        //final File folder = new File("/Users/stanleychin/Desktop/Movies");
-        final File folder = new File("movietitles.txt");
-
-        //listFilesForFolder(folder);
+        final File folder = new File("movietitles2.txt");
         listFilesDirectly(folder);
     }
 
@@ -112,36 +103,13 @@ private int yify;
      * helper method used to list the folders and stores the raw name into the movieNmae list
      * @param folder the directory used to display the contents of
      */
-    public void listFilesForFolder(File folder) {
-        for (final File fileEntry : folder.listFiles()) {
-            if (fileEntry.isDirectory()) {
-                listFilesForFolder(fileEntry);
-            } else {
-                String fileName = fileEntry.getName();
-                //picks strictly from a direct set of file names
-                if (fileName.substring(fileName.length() - 3, fileName.length()).equals("mp4") && fileName.contains("x264")
-                        && !fileName.contains("ASAP") && !fileName.contains("asap") && !fileName.contains("Dead")) {
-                    movieName.add(fileName);
-                    System.out.println("MOVIE: " + fileName);
-                }
-            }
-        }
-    }
-
     private void listFilesDirectly(File folder) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(folder));
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.contains("YIFY")) {
-                    System.out.println("YIFY: " + line);
-                    yify++;
-                }
-                if (line.substring(line.length() - 3, line.length()).equals("mp4") && line.contains("YIFY")
-                        && !line.contains("ASAP") && !line.contains("asap") && !line.contains("Poets") && !line.contains("Joe")) {
-
+                if (line.contains("YIFY") && line.contains(".mp4"))
                     movieName.add(line);
-                }
             }
         } catch (FileNotFoundException f) {
             f.printStackTrace();
@@ -162,7 +130,7 @@ private int yify;
         //Loops through the list of each movieName movie name
         while (index < movieName.size()) {
             String movieToModify = movieName.get(index); //the movie to modify
-            int year_counter = 2000;    //start at year 2000
+            int year_counter = 1980;    //start at year 1980
 
             //get rid of the extra stuff after the year
             while (year_counter <= year) {
@@ -173,6 +141,8 @@ private int yify;
                 }
                 year_counter++;
             }
+
+            System.out.println("Preparse: " + movieToModify);
 
             //get rid of periods
             String parsedMovieName = movieToModify.substring(0, index_to_parse - 1);
@@ -192,7 +162,7 @@ private int yify;
             } else
                 parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
 
-            System.out.println(parsedMovieName);
+            System.out.println("Postparse: " + parsedMovieName);
 
             movieName.set(index, parsedMovieName.substring(0, index_to_parse - 1));
             movie_name_year.put(parsedMovieName, year_counter);
@@ -225,14 +195,7 @@ private int yify;
             url += yearPiece;
             url += skeletonEnd;
             try {
-
                 String jsonData = readUrl(url);
-
-                //GSON PARSING
-//                Gson gsonCurrent = new Gson();
-//                md = gsonCurrent.fromJson(jsonData, MovieData.class);
-                //JACKSON PARSING
-                //create ObjectMapper instance
                 ObjectMapper objectMapper = new ObjectMapper();
 
                 //convert json string to object
