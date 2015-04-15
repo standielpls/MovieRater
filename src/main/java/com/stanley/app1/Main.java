@@ -116,7 +116,7 @@ public class Main {
      * loads the data from the directory chosen
      */
     public void loadData() {
-        final File folder = new File("movietitles2.txt");
+        final File folder = new File("movietitles.txt");
         listFilesDirectly(folder);
     }
 
