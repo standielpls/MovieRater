@@ -18,33 +18,40 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Main {
     private MovieData md; //the object that carries all the information about the movie
-    private HashMap<String, Double> h;  //hash map to store the ratings based on the movie title as the key
+    private TreeMap<String, Double> h;  //hash map to store the ratings based on the movie title as the key
     private List<String> movieName; //stores all the movie names used for url detection
     private HashMap<String, Integer> movie_name_year;   //stores the year of each movie for url detection
     private List<String> movies;    //stores all the user-friendly movie names
-private int yify;
+    private List<String> bullshit;
+    private List<Node> sortedList;
+    private List <String> notYifMovies;
+    private int index_to_parse;
     /**
      * Constructor for Main, instantiates the declared instance variables
      */
     public Main() {
+        System.out.println("Hang tight, your list is being processed ...");
         movies = new ArrayList<String>();
-        h = new HashMap<String, Double>();
+        h = new TreeMap<String, Double>();
         movie_name_year = new HashMap<String, Integer>();
         movieName = new ArrayList<String>();
+        bullshit = new ArrayList<String>();
+        sortedList = new ArrayList<Node>();
+        notYifMovies = new ArrayList<String>();
 
-        //in addition, it loads the data, modify the titles, and parse the data
+        init();
+    }
+
+    private void init() {
         loadData();
         modifyMovieTitle();
         parseMovieData();
+        sortData();
     }
-
     /**
      * Main method used to run the program
      * @param args
@@ -85,9 +92,18 @@ private int yify;
         System.out.println("==========================================");
         System.out.println("RATING\t\tTITLE");
         int i = 0;
-        while (i < h.size()) {
-            System.out.println(h.get(movies.get(i)) + "\t\t" + movies.get(i));
+//        while (i < h.size()) {
+//            System.out.println(h.get(movies.get(i)) + "\t\t" + movies.get(i));
+//            i++;
+//        }
+        while(i<sortedList.size()) {
+            System.out.println(sortedList.get(i).toString());
             i++;
+        }
+        int j = 0;
+        System.out.println("\n----------------Bullshit that didn't make it------------------");
+        while (j < bullshit.size()) {
+            System.out.println(bullshit.get(j++));
         }
     }
 
@@ -110,6 +126,8 @@ private int yify;
             while ((line = br.readLine()) != null) {
                 if (line.contains("YIFY") && line.contains(".mp4"))
                     movieName.add(line);
+                else
+                    notYifMovies.add(line);
             }
         } catch (FileNotFoundException f) {
             f.printStackTrace();
@@ -125,10 +143,11 @@ private int yify;
 
         int index = 0;
         int year = Calendar.getInstance().get(Calendar.YEAR);
-        int index_to_parse = 0;
 
         //Loops through the list of each movieName movie name
         while (index < movieName.size()) {
+            index_to_parse = 0;
+
             String movieToModify = movieName.get(index); //the movie to modify
             int year_counter = 1980;    //start at year 1980
 
@@ -141,28 +160,8 @@ private int yify;
                 }
                 year_counter++;
             }
-
-            System.out.println("Preparse: " + movieToModify);
-
             //get rid of periods
-            String parsedMovieName = movieToModify.substring(0, index_to_parse - 1);
-            if (parsedMovieName.contains("&")) {
-                parsedMovieName = parsedMovieName.replaceAll("&", "%26");   //replace all & with %26 (ASCII)
-                index_to_parse += 2;
-                parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
-
-            } else if (parsedMovieName.contains(",")) {
-                parsedMovieName = parsedMovieName.replace(",", "%2C");      //replace all commas with %2c (ASCII)
-                index_to_parse += 2;
-                parsedMovieName = parsedMovieName.replaceAll("\\.", "");   //replace all periods with space
-            } else if (parsedMovieName.contains("'")) {
-                parsedMovieName = parsedMovieName.replace("'", "%27");      //replace all apostrophe with %27 (ASCII)
-                index_to_parse += 2;
-                parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
-            } else
-                parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
-
-            System.out.println("Postparse: " + parsedMovieName);
+            String parsedMovieName = replaceString(movieToModify.substring(0, index_to_parse - 1));
 
             movieName.set(index, parsedMovieName.substring(0, index_to_parse - 1));
             movie_name_year.put(parsedMovieName, year_counter);
@@ -170,7 +169,49 @@ private int yify;
             index++;
         }
     }
+    private String replaceString(String parsedMovieName) {
+        if (parsedMovieName.contains("&")) {
+            parsedMovieName = parsedMovieName.replaceAll("&", "%26");   //replace all & with %26 (ASCII)
+            index_to_parse += 2;
+            parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
 
+        } else if (parsedMovieName.contains(",")) {
+            parsedMovieName = parsedMovieName.replace(",", "%2C");      //replace all commas with %2c (ASCII)
+            index_to_parse += 2;
+            parsedMovieName = parsedMovieName.replaceAll("\\.", "");   //replace all periods with space
+        } else if (parsedMovieName.contains("'")) {
+            parsedMovieName = parsedMovieName.replace("'", "%27");      //replace all apostrophe with %27 (ASCII)
+            index_to_parse += 2;
+            parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
+        } else if (parsedMovieName.contains(".UNRATED")) {
+            parsedMovieName = parsedMovieName.replace(".UNRATED", "");      //replace all apostrophe with %27 (ASCII)
+            index_to_parse -= 8;
+            parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
+
+        } else if (parsedMovieName.contains(".EXTENDED")) {
+            parsedMovieName = parsedMovieName.replace(".EXTENDED", "");
+            index_to_parse -= 9;
+            parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
+
+        } else if (parsedMovieName.contains("Hes")) {
+            parsedMovieName = parsedMovieName.replace("Hes", "He%27s");
+            index_to_parse += 3;
+            parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
+
+        } else if (parsedMovieName.contains("Lets")) {
+            parsedMovieName = parsedMovieName.replace("Lets", "Let%27s");
+            index_to_parse += 3;
+            parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
+
+        } else
+            parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
+
+        if (parsedMovieName.contains(" vs ")) {
+            parsedMovieName = parsedMovieName.replace(" vs ", " vs. ");
+            index_to_parse++;
+        }
+        return parsedMovieName;
+    }
     /**
      * parses the movie data by reading the url, sending a request to the network and retrieving the data
      */
@@ -190,7 +231,6 @@ private int yify;
                 middlePiece += parts[i++];
             }
             String url = skeletonFront + middlePiece + skeletonMid;
-
             String yearPiece = Integer.toString(movie_name_year.get(movie_name));
             url += yearPiece;
             url += skeletonEnd;
@@ -205,12 +245,12 @@ private int yify;
             }
             String rep = md.getResponse();
             if (rep.equals("True")) {
-                if (md.getImdbRating().equals("N/A")) {
-                    storeRating(md.getTitle(), 0.0);
-                }
-                else
+                if (!md.getImdbRating().equals("N/A"))
                     storeRating(md.getTitle(), Double.parseDouble(md.getImdbRating()));
             }
+            else
+                bullshit.add(movie_name);
+
             index++;
         }
     }
@@ -223,6 +263,63 @@ private int yify;
     private void storeRating(String s, Double d) {
         h.put(s, d);
         movies.add(s);
+    }
+    private void sortData() {
+        List<Node> keys = new ArrayList<Node>();
+        int i=0;
+        while (i < h.size()) {
+            Node n = new Node(movies.get(i), h.get(movies.get(i)));
+            keys.add(n);
+            i++;
+        }
+        sortedList =  sort(keys);
+    }
+    private List<Node> sort(List<Node> nodeList) {
+        List<Node> sortedList = new ArrayList<Node>();
+
+        int i = 0;
+        while (i < nodeList.size()) {
+            double highestNum=nodeList.get(i).getValue();
+            int j=0;
+            int index=0;
+            while (j < nodeList.size()) {
+                if (nodeList.get(j).getValue() > highestNum) {
+                    highestNum = nodeList.get(j).getValue();
+                    index=j;
+                }
+                j++;
+            }
+
+            sortedList.add(nodeList.get(index));
+            nodeList.remove(index);
+            i++;
+        }
+        return sortedList;
+    }
+    public class Node {
+        private Double value;
+        private String key;
+
+        public Node(String k, Double v) {
+            this.key = k;
+            this.value = v;
+        }
+
+        public Double getValue() {
+            return this.value;
+        }
+        public String getKey() {
+            return this.key;
+        }
+        public void setValue(Double v) {
+            this.value = v;
+        }
+        public void setKey(String k) {
+            this.key = k;
+        }
+        public String toString() {
+            return value + "\t\t" + key;
+        }
     }
 }
 
