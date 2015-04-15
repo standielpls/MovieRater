@@ -25,24 +25,24 @@ public class Main {
     private TreeMap<String, Double> h;  //hash map to store the ratings based on the movie title as the key
     private List<String> movieName; //stores all the movie names used for url detection
     private HashMap<String, Integer> movie_name_year;   //stores the year of each movie for url detection
-    private List<String> movies;    //stores all the user-friendly movie names
+    private Set<String> movies;    //stores all the user-friendly movie names
     private List<String> bullshit;
     private List<Node> sortedList;
     private List <String> notYifMovies;
     private int index_to_parse;
+    private int year_counter;
     /**
      * Constructor for Main, instantiates the declared instance variables
      */
     public Main() {
         System.out.println("Hang tight, your list is being processed ...");
-        movies = new ArrayList<String>();
+        movies = new HashSet<String>();
         h = new TreeMap<String, Double>();
         movie_name_year = new HashMap<String, Integer>();
         movieName = new ArrayList<String>();
         bullshit = new ArrayList<String>();
         sortedList = new ArrayList<Node>();
         notYifMovies = new ArrayList<String>();
-
         init();
     }
 
@@ -105,6 +105,11 @@ public class Main {
         while (j < bullshit.size()) {
             System.out.println(bullshit.get(j++));
         }
+
+        int k = 0;
+        while(k < notYifMovies.size()) {
+            System.out.println(notYifMovies.get(k++));
+        }
     }
 
     /**
@@ -124,10 +129,8 @@ public class Main {
             BufferedReader br = new BufferedReader(new FileReader(folder));
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.contains("YIFY") && line.contains(".mp4"))
+                if (haveYear(line) && !line.startsWith("."))
                     movieName.add(line);
-                else
-                    notYifMovies.add(line);
             }
         } catch (FileNotFoundException f) {
             f.printStackTrace();
@@ -142,24 +145,13 @@ public class Main {
     private void modifyMovieTitle() {
 
         int index = 0;
-        int year = Calendar.getInstance().get(Calendar.YEAR);
 
         //Loops through the list of each movieName movie name
         while (index < movieName.size()) {
             index_to_parse = 0;
 
             String movieToModify = movieName.get(index); //the movie to modify
-            int year_counter = 1980;    //start at year 1980
-
-            //get rid of the extra stuff after the year
-            while (year_counter <= year) {
-                String year1 = Integer.toString(year_counter);
-                if (movieToModify.contains(year1)) {
-                    index_to_parse = movieToModify.indexOf(year1);
-                    break;
-                }
-                year_counter++;
-            }
+            Boolean movie_year_present = haveYear(movieToModify);
             //get rid of periods
             String parsedMovieName = replaceString(movieToModify.substring(0, index_to_parse - 1));
 
@@ -168,6 +160,21 @@ public class Main {
 
             index++;
         }
+    }
+    private Boolean haveYear(String movieToModify) {
+        year_counter = 1980;    //start at year 1980
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+
+        //get rid of the extra stuff after the year
+        while (year_counter <= year) {
+            String year1 = Integer.toString(year_counter);
+            if (movieToModify.contains(year1)) {
+                index_to_parse = movieToModify.indexOf(year1);
+                return true;
+            }
+            year_counter++;
+        }
+        return false;
     }
     private String replaceString(String parsedMovieName) {
         if (parsedMovieName.contains("&")) {
@@ -197,12 +204,21 @@ public class Main {
             parsedMovieName = parsedMovieName.replace("Hes", "He%27s");
             index_to_parse += 3;
             parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
+        } else if (parsedMovieName.contains("Shes")) {
+            parsedMovieName = parsedMovieName.replace("Shes", "She%27s");
+            index_to_parse += 3;
+            parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
 
         } else if (parsedMovieName.contains("Lets")) {
             parsedMovieName = parsedMovieName.replace("Lets", "Let%27s");
             index_to_parse += 3;
             parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
-
+        } else if (parsedMovieName.contains(".and.")) {
+            parsedMovieName = parsedMovieName.replace(".and.", "%26");
+            index_to_parse -=2;
+        } else if (parsedMovieName.contains(".And.")) {
+            parsedMovieName = parsedMovieName.replace(".And.", "%26");
+            index_to_parse -=2;
         } else
             parsedMovieName = parsedMovieName.replaceAll("\\.", " ");   //replace all periods with space
 
@@ -267,13 +283,17 @@ public class Main {
     private void sortData() {
         List<Node> keys = new ArrayList<Node>();
         int i=0;
-        while (i < h.size()) {
-            Node n = new Node(movies.get(i), h.get(movies.get(i)));
+        //Node n = new Node(movies.get(i), h.get(movies.get(i)));
+        Iterator<String> it = movies.iterator();
+        while (it.hasNext()) {
+            String x = (String) it.next();
+            Node n = new Node(x, h.get(x));
             keys.add(n);
-            i++;
         }
+
         sortedList =  sort(keys);
     }
+
     private List<Node> sort(List<Node> nodeList) {
         List<Node> sortedList = new ArrayList<Node>();
 
