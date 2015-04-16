@@ -11,7 +11,7 @@ It uses the Jackson library to parse data from OMDBAPI and data binds JSON to th
 Before you start, you need to compile your list of movies:     
 ```
 $cd /path/to/movies-folder/     
-$ls -R > moviestitle.txt     
+$ls -R > m.txt     
 ```
 Now for the program installation
 ```
@@ -21,7 +21,7 @@ $cd MovieRater
 At this time, move moviestitle.txt text file into this directory
 ```
 $mvn package
-$java -jar target/Movie_Rater-1.0-SNAPSHOT-jar-with-dependencies.jar
+$java -jar target/Movie_Rater-1.1-SNAPSHOT-jar-with-dependencies.jar
 ```
 
 ###Usage Example
