@@ -11,7 +11,7 @@ It uses the Jackson library to parse data from OMDBAPI and data binds JSON to th
 Before you start, you need to compile your list of movies:     
 ```
 $cd /path/to/movies-folder/     
-$ls > moviestitle.txt     
+$ls -R > moviestitle.txt     
 ```
 Now for the program installation
 ```
