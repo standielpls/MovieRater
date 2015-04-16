@@ -26,9 +26,7 @@ public class Main {
     private List<String> movieName; //stores all the movie names used for url detection
     private HashMap<String, Integer> movie_name_year;   //stores the year of each movie for url detection
     private Set<String> movies;    //stores all the user-friendly movie names
-    private List<String> bullshit;
     private List<Node> sortedList;
-    private List <String> notYifMovies;
     private int index_to_parse;
     private int year_counter;
     /**
@@ -40,9 +38,7 @@ public class Main {
         h = new TreeMap<String, Double>();
         movie_name_year = new HashMap<String, Integer>();
         movieName = new ArrayList<String>();
-        bullshit = new ArrayList<String>();
         sortedList = new ArrayList<Node>();
-        notYifMovies = new ArrayList<String>();
         init();
     }
 
@@ -92,23 +88,9 @@ public class Main {
         System.out.println("==========================================");
         System.out.println("RATING\t\tTITLE");
         int i = 0;
-//        while (i < h.size()) {
-//            System.out.println(h.get(movies.get(i)) + "\t\t" + movies.get(i));
-//            i++;
-//        }
         while(i<sortedList.size()) {
             System.out.println(sortedList.get(i).toString());
             i++;
-        }
-        int j = 0;
-        System.out.println("\n----------------Bullshit that didn't make it------------------");
-        while (j < bullshit.size()) {
-            System.out.println(bullshit.get(j++));
-        }
-
-        int k = 0;
-        while(k < notYifMovies.size()) {
-            System.out.println(notYifMovies.get(k++));
         }
     }
 
@@ -116,7 +98,7 @@ public class Main {
      * loads the data from the directory chosen
      */
     public void loadData() {
-        final File folder = new File("movietitles.txt");
+        final File folder = new File("m.txt");
         listFilesDirectly(folder);
     }
 
@@ -226,6 +208,7 @@ public class Main {
             parsedMovieName = parsedMovieName.replace(" vs ", " vs. ");
             index_to_parse++;
         }
+
         return parsedMovieName;
     }
     /**
@@ -236,6 +219,7 @@ public class Main {
         final String skeletonMid = "&y=";
         final String skeletonEnd = "&plot=short&r=json";
         int index = 0;
+
         while (index < movieName.size()) {
             String movie_name = movieName.get(index);
             String[] parts = movie_name.split(" ");
@@ -264,9 +248,6 @@ public class Main {
                 if (!md.getImdbRating().equals("N/A"))
                     storeRating(md.getTitle(), Double.parseDouble(md.getImdbRating()));
             }
-            else
-                bullshit.add(movie_name);
-
             index++;
         }
     }
@@ -297,13 +278,13 @@ public class Main {
     private List<Node> sort(List<Node> nodeList) {
         List<Node> sortedList = new ArrayList<Node>();
 
-        int i = 0;
-        while (i < nodeList.size()) {
-            double highestNum=nodeList.get(i).getValue();
+        while (!nodeList.isEmpty()) {
+            double highestNum=nodeList.get(0).getValue();
             int j=0;
             int index=0;
             while (j < nodeList.size()) {
-                if (nodeList.get(j).getValue() > highestNum) {
+                double tmp_num = nodeList.get(j).getValue();
+                if (tmp_num >= highestNum) {
                     highestNum = nodeList.get(j).getValue();
                     index=j;
                 }
@@ -312,7 +293,6 @@ public class Main {
 
             sortedList.add(nodeList.get(index));
             nodeList.remove(index);
-            i++;
         }
         return sortedList;
     }
